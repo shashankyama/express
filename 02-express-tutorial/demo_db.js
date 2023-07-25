@@ -1,5 +1,4 @@
 const mysql = require("mysql");
-const data2 = require("./data2");
 
 const con = mysql.createConnection({
   host: "127.0.0.1",
@@ -11,17 +10,26 @@ const con = mysql.createConnection({
 });
 
 con.connect((err) => {
-  if (err) throw err;
+  if (err) {
+    console.error("Error connecting to the database:", err);
+    return;
+  }
+  console.log("Connected");
+});
+
+function insertData(id, name) {
+  const userData = [[id, name]];
   con.query(
-    "INSERT INTO users (id,name) VALUES ?",
-    [data2.data],
+    "INSERT INTO users (id, name) VALUES ?",
+    [userData],
     function (err, result) {
       if (err) {
-        console.log(err);
+        console.error("Error inserting data:", err);
       } else {
         console.log("Number of records inserted: " + result.affectedRows);
       }
     }
   );
-  con.end(); // Close the connection when done
-});
+}
+
+module.exports = insertData;
